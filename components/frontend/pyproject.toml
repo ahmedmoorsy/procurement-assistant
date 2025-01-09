@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "procurement-assistant-fe"
+version = "0.1.0"
+description = ""
+package-mode = false
+authors = ["Ahmed Moorsy <ahmed.moorsy798@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+streamlit = "^1.41.1"
+python-dotenv = "^1.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

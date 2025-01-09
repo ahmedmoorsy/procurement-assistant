@@ -1,0 +1,9 @@
+[server]
+enableCORS = true
+enableXsrfProtection = false
+runOnSave = true
+headless = true
+fileWatcherType = "none"
+
+[browser]
+gatherUsageStats = false

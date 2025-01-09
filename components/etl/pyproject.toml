@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "procurement-assistant-etl"
+version = "0.1.0"
+description = ""
+authors = ["Ahmed Moorsy <ahmed.moorsy798@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pandas = "^2.2.3"
+numpy = "^1.22.4"
+motor = "^3.6.0"
+pydantic = "^2.10.4"
+pydantic-settings = "^2.7.1"
+python-dotenv = "^1.0.1"
+cohere = "^5.13.5"
+faiss-cpu = "^1.9.0.post1"
+langchain = "^0.3.14"
+langchain-cohere = "^0.3.4"
+langchain-community = "^0.3.14"
+langchain-huggingface = "^0.1.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

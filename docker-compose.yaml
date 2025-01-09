@@ -1,0 +1,50 @@
+version: "3.8"
+services:
+  mongodb:
+    image: mongo:latest 
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - 27017:27017
+
+  backend:
+    build:
+      context: ./components/backend
+    container_name: procurement-assistant-be
+    ports:
+      - "8000:8000"
+    restart: always
+    environment:
+      - MODEL=${MODEL}
+      - MODEL_PROVIDER=${MODEL_PROVIDER}
+      - TEMPERATURE=${TEMPERATURE}
+      - DEPLOYMENT_NAME=${DEPLOYMENT_NAME}
+      - AZURE_API_KEY=${AZURE_API_KEY}
+      - OPENAI_API_VERSION=${OPENAI_API_VERSION}
+      - AZURE_ENDPOINT=${AZURE_ENDPOINT}
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_DB_NAME=${MONGO_DB_NAME}
+    volumes:
+      - ./components/backend/src:/app/src
+    depends_on:
+      - mongodb
+
+  frontend:
+    build:
+      context: ./components/frontend
+    container_name: procurement-assistant-fe
+    ports:
+      - "8081:8081"
+    restart: always
+    volumes:
+      - ./components/frontend/src:/app/src
+    environment:
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+      - backend
