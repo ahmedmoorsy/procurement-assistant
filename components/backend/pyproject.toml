@@ -3,6 +3,7 @@ name = "procurement-assistant-be"
 version = "0.1.0"
 description = ""
 package-mode = false
+
 authors = ["Ahmed Moorsy <ahmed.moorsy798@gmail.com>"]
 
 
@@ -25,6 +26,10 @@ langgraph = "^0.2.61"
 uvicorn = "^0.34.0"
 fastapi = "^0.115.6"
 gunicorn = "^23.0.0"
+pytest = "^8.3.4"
+pytest-mock = "^3.14.0"
+pytest-asyncio = "^0.25.2"
+
 
 
 [build-system]

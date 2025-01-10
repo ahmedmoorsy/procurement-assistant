@@ -1,7 +1,6 @@
 from graph.graph_state import AgentState
 from langchain_core.messages import HumanMessage, AIMessage
 from graph.graph_builder import GraphBuilder
-from services.mognodb_service import MongoDBService
 
 
 class ConversationService:
