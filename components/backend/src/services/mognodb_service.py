@@ -34,8 +34,11 @@ class MongoDBService:
         """
         username_quoted = quote_plus(username)
         password_quoted = quote_plus(password)
-        mongo_uri = f"mongodb://{username_quoted}:{password_quoted}@{host}:{port}/"
-
+        mongo_uri = (
+            f"mongodb://{username_quoted}:{password_quoted}@{host}:{port}/"
+            f"{db_name}?authSource=admin&directConnection=true"
+            f"&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8"
+        )
         self.client = AsyncIOMotorClient(mongo_uri)
         self.db = self.client[db_name]
         self.orders_collection = self.db[orders_collection]

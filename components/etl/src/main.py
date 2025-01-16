@@ -53,9 +53,9 @@ async def main():
     config = Config()
     data_file = Path("data") / "PURCHASE ORDER DATA EXTRACT 2012-2015_0.csv"
 
-    extractor = CSVDataExtractor(csv_file=data_file, chunk_size=10000)
+    extractor = CSVDataExtractor(csv_file=data_file, chunk_size=100)
     print("Loading HuggingFace Embedding model...")
-    model_name = "sentence-transformers/all-MiniLM-L6-v2"
+    model_name = "sentence-transformers/all-mpnet-base-v2"
     model_kwargs = {"device": "cpu"}
     encode_kwargs = {"normalize_embeddings": False}
     embeddings = HuggingFaceEmbeddings(
@@ -63,6 +63,7 @@ async def main():
         model_kwargs=model_kwargs,
         encode_kwargs=encode_kwargs,
         cache_folder="embeddings_cache",
+        multi_process=False
     )
     print("Loaded HuggingFace Embedding model...")
 

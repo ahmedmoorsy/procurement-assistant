@@ -39,6 +39,23 @@ class FaissVectorDB:
 
         return res
 
+    async def add_documents_in_batches(self, documents, ids, batch_size=200):
+        """
+        Add documents to the vector store in batches.
+        
+        :param vector_store: The vector store object.
+        :param documents: List of documents to add.
+        :param ids: List of document IDs corresponding to the documents.
+        :param batch_size: The size of each batch.
+        """
+        for i in range(0, len(documents), batch_size):
+            batch_docs = documents[i:i + batch_size]
+            batch_ids = ids[i:i + batch_size]
+            try:
+                await self.vector_store.aadd_documents(documents=batch_docs, ids=batch_ids)
+            except Exception as e:
+                print(f"Error during aadd_documents: {e}")
+            
     def save_indexes(self):
         self.vector_store.save_local(self.vector_store_path)
 

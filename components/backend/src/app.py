@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes.routes import router
 from services.mognodb_service import MongoDBService
 from config import Config
+from graph.graph_builder import GraphBuilder
 
 
 @asynccontextmanager
@@ -17,7 +18,9 @@ async def lifespan(app: FastAPI):
         db_name=config.mongodb.DB_NAME,
         orders_collection="Orders",
     )
-    app.state.mongo_client = mongo_client
+    graph_builder = GraphBuilder(mongo_client)
+    graph = await graph_builder.initialize_graph()
+    app.state.graph = graph
     yield
     await mongo_client.close_connection()
 

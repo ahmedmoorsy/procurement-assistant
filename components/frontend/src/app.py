@@ -13,7 +13,7 @@ load_dotenv()
 BACKEND_URL = BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8000")
 url = f"{BACKEND_URL}/bot/v1/chat"
 
-thread_id = str(uuid4())
+thread_id = "557beeb3-4f50-40e0-a65b-5cb363e8e8a9"
 reqHeaders = {"Accept": "application/json", "Content-Type": "application/json"}
 
 st.set_page_config(

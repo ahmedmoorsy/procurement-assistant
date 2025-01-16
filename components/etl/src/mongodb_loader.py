@@ -39,8 +39,11 @@ class MongoDBLoader:
         """
         username_quoted = quote_plus(username)
         password_quoted = quote_plus(password)
-        mongo_uri = f"mongodb://{username_quoted}:{password_quoted}@{host}:{port}/"
-
+        mongo_uri = (
+            f"mongodb://{username_quoted}:{password_quoted}@{host}:{port}/"
+            f"{db_name}?authSource=admin&directConnection=true"
+            f"&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.8"
+        )
         self.client = AsyncIOMotorClient(mongo_uri)
         self.db = self.client[db_name]
         self.orders_collection = orders_collection
@@ -56,7 +59,7 @@ class MongoDBLoader:
         await self.db[self.orders_collection].delete_many({})
         logger.info("Collection cleared successfully.")
 
-    async def insert_documents(self, df: pd.DataFrame, chunk_size: int = 10000):
+    async def insert_documents(self, df: pd.DataFrame, chunk_size: int = 100):
         """
         Insert documents into two collections: purchaseOrders & lineItems.
         Includes validation for required columns and data types.
@@ -130,7 +133,7 @@ class MongoDBLoader:
                 try:
                     commodity_title_uuid = str(uuid4())
                     item_desc_uuid = str(uuid4())
-                    docs_ids.extend([commodity_title_uuid, item_desc_uuid])
+                    docs_ids.extend([item_desc_uuid, commodity_title_uuid])
 
                     order_doc = {
                         "purchaseOrderNumber": row["Purchase Order Number"],
@@ -160,18 +163,14 @@ class MongoDBLoader:
                     }
                     orders.append(order_doc)
 
-                    docs.append(
-                        Document(
-                            page_content=row["Item Description"],
-                            metadata={"source": "Item Description"},
+                    fields = ["Item Description", "Commodity Title"]
+                    for field in fields:
+                        docs.append(
+                            Document(
+                                page_content=row[field],
+                                metadata={"source": field},
+                            )
                         )
-                    )
-                    docs.append(
-                        Document(
-                            page_content=row["Commodity Title"],
-                            metadata={"source": "Commodity Title"},
-                        )
-                    )
                 except KeyError as e:
                     raise ValueError(f"Missing required field in row: {e}")
                 except Exception as e:
@@ -193,7 +192,11 @@ class MongoDBLoader:
         """
         try:
             await self.db[self.orders_collection].insert_many(orders)
-            # await self.vectordb.vector_store.aadd_documents(documents=docs, ids=docs_ids)
+            
+            # await self.vectordb.add_documents_in_batches(
+            #     documents=docs,
+            #     ids=docs_ids
+            # )
         except Exception as e:
             logger.error(f"Failed to insert documents into MongoDB or vector DB: {e}")
             raise RuntimeError(

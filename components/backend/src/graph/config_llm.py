@@ -63,7 +63,7 @@ class ConfigLLM:
       Field Description: Certifications or qualifications of the supplier, such as SB (Small Business), DVBE (Disabled Veteran Business Enterprise), SBE (Small Business Enterprise), NP (Non-Profit), or MB (Micro Business).
 
     10. Field Name: acquisitionType
-        Field Description: Category of the acquisition, such as IT Goods, Non-IT Goods, IT Services, etc.
+        Field Description: Category of the acquisition, such as it goods, non-it goods, it services, etc.
 
     11. Field Name: acquisitionMethod
         Field Description: The specific method or process used to acquire the items, varying by organizational context.
@@ -118,8 +118,16 @@ class ConfigLLM:
     }
 
     FEW_SHOT_EXAMPLE_2 = {
-        "query": "Calculate the total sum of all item prices.",
+        "query": "Calculate the total sum of all item prices in 2013.",
         "pipeline": [
+            {
+                "$match": {
+                    "creationDate": {
+                        "$gte": datetime(2013, 1, 1, 0, 0, 0),
+                        "$lte": datetime(2013, 12, 31, 23, 59, 59),
+                    }
+                }
+            },
             {
                 "$addFields": {
                     "numericTotalPrice": {
@@ -182,8 +190,16 @@ class ConfigLLM:
     }
 
     FEW_SHOT_EXAMPLE_4 = {
-        "query": "Total spending grouped by Acquisition Type.",
+        "query": "Total spending grouped by Acquisition Type in 2013.",
         "pipeline": [
+            {
+                "$match": {
+                    "creationDate": {
+                        "$gte": datetime(2013, 1, 1, 0, 0, 0),
+                        "$lte": datetime(2013, 12, 31, 23, 59, 59),
+                    }
+                }
+            },
             {
                 "$addFields": {
                     "numeric_price": {

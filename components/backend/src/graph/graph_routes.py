@@ -49,5 +49,5 @@ def validation_routing(
     is_valid = state.get("query_correct")
     if current_route == VALIDATION_AGENT and is_valid:
         return EXECUTION_AGENT
-    else:
+    elif current_route == VALIDATION_AGENT and not is_valid:
         return ANALYTICS_AGENT

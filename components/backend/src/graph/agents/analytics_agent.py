@@ -1,3 +1,4 @@
+import logging
 from langchain_core.tools import tool
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
@@ -7,6 +8,7 @@ from graph.llm import llm
 from graph.config_llm import ConfigLLM
 import datetime
 
+logger = logging.getLogger(__name__)
 
 class MongoSchema(BaseModel):
     mongodb_query: str = Field(description="MongoDB query to run")
@@ -63,6 +65,8 @@ def write_query_tool(user_query: str) -> str:
             "json_ex_string_4": ConfigLLM.FEW_SHOT_EXAMPLE_4,
         }
     )
+    logger.info(f"Generated MongoDB query: {resp.mongodb_query}")
+    
     return "MongoDB query has been generated successfully.", {
         "generated_query": resp.mongodb_query,
         "user_query": user_query,
@@ -93,6 +97,8 @@ Assistant: I'm sorry, I can only process queries for data between 2012 and 2015.
 User: Show me total orders for 2013
 Assistant: Sure. Let me propose a schema/query.
 tool_call: write_schema_tool
+
+IMPORTANT Note if validation or execution agent return any error, you can decide to generate a new query using "write_query_tool" or ask the user to refine the question.
 
 Current Date: {current_date}
 """.format(

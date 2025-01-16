@@ -1,6 +1,10 @@
+import logging
 from graph.graph_state import AgentState
 from langchain_core.messages import HumanMessage, AIMessage
 from graph.graph_builder import GraphBuilder
+
+
+logger = logging.getLogger(__name__)
 
 
 class ConversationService:
@@ -19,28 +23,22 @@ class ConversationService:
         :param thread_id: A thread identifier for tracking conversation context.
         :return: The bot's response (as a string) or None if no response is generated.
         """
-        state = AgentState(
-            messages=[],
-        )
 
-        state["messages"].append(HumanMessage(content=user_message, name="User"))
-        messages_before = len(state["messages"])
-
-        state = await self.graph.ainvoke(
-            state, {"configurable": {"thread_id": thread_id}}
+        input_message = HumanMessage(content=user_message, name="User")
+        response = await self.graph.ainvoke(
+            {"messages": [input_message]}, {"configurable": {"thread_id": thread_id}}
         )
-        new_messages = state["messages"][messages_before:]
 
         last_response = None
-        for response in new_messages:
+        for response in response['messages']:
             if "tool_calls" in response.additional_kwargs:
                 for call in response.additional_kwargs["tool_calls"]:
-                    print(
+                    logging.info(
                         f"({type(response).__name__}) "
                         f"{call['function']['name']}: {call['function']['arguments']}"
                     )
             else:
-                print(
+                logging.info(
                     f"({type(response).__name__}) {response.name} : {response.content}"
                 )
 
@@ -48,3 +46,4 @@ class ConversationService:
                 last_response = response.content
 
         return last_response
+    

@@ -66,9 +66,9 @@ def validation_agent(state: AgentState, config: RunnableConfig):
     user_query = state.get("user_query")
     generated_query = state.get("generated_query")
     resp = chain.invoke({"generated_query": generated_query, "user_query": user_query})
-    bot_response = "The generated pipeline is valid. It adheres to the schema, security standards, and MongoDB aggregation syntax."
+    bot_response = "The generated query is valid. It adheres to the schema, security standards, and MongoDB aggregation syntax."
     if not resp.is_valid:
-        bot_response = f"The generated pipeline is invalid, the following issues were identified: {resp.explanation}. Please try again and generate a valid pipeline."
+        bot_response = f"The generated query: {generated_query} is invalid for user query: {user_query}, the following issues were identified: {resp.explanation}. Please try again and generate a valid query."
 
     validation_message = AIMessage(content=bot_response, name=VALIDATION_AGENT)
     state["messages"].append(validation_message)

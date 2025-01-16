@@ -2,9 +2,8 @@
 name = "procurement-assistant-be"
 version = "0.1.0"
 description = ""
-package-mode = false
-
 authors = ["Ahmed Moorsy <ahmed.moorsy798@gmail.com>"]
+package-mode = false
 
 
 [tool.poetry.dependencies]
